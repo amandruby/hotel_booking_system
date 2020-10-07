@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b User:
+  = @reservation.user_id
+%p
+  %b Checkin:
+  = @reservation.checkin
+%p
+  %b Checkout:
+  = @reservation.checkout
+
+= link_to 'Edit', edit_reservation_path(@reservation)
+\|
+= link_to 'Back', reservations_path

@@ -1,0 +1,31 @@
+%h3 Check room availability
+
+= form_tag("/rooms/do_search", {id: "search_room_form", onsubmit: "return searchRoom()"}) do |f|
+  Check in
+  %input{type: "date", name: "q[checkin]", id: 'checkin'}
+
+  Check out 
+  %input{type: "date", name: "q[checkout]", id: 'checkout'}
+
+  %input{type: "submit", value: "Search"}
+
+
+%div{id: "search_result"}
+
+
+:javascript
+  function searchRoom(){
+    checkout = $("#checkout").val()
+    checkin = $("#checkin").val()
+    $.ajax({
+      url: '/rooms/do_search.json',
+      data: {q: {checkout: checkout, checkin: checkin} },
+      success: function(res,status){
+        $("#search_result").html(res.rooms.length)
+      },
+      error: function(res, status){
+        alert("Error")
+      }
+    })
+    return false;
+  }

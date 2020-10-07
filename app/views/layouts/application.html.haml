@@ -1,0 +1,19 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title HotelBookingSystem
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application'
+  %body
+    - if logged_in?
+      = button_to "Logout", sessions_path, method: :delete
+      = link_to "Create Reservation", "/reservations/new"
+      = link_to "Search Room", "/rooms/search"
+    - else
+      = link_to "Sign up", "/signup"
+      = button_to "Login", login_path, method: :get
+
+    = yield

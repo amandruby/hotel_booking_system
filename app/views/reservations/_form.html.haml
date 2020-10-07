@@ -1,0 +1,52 @@
+= form_for @reservation do |f|
+  - if @reservation.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@reservation.errors.count, "error")} prohibited this reservation from being saved:"
+      %ul
+        - @reservation.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :checkin
+    %input{type: "date", name: 'reservation[checkin]', id: 'checkin'}
+  .field
+    = f.label :checkout
+    %input{type: "date", name: 'reservation[checkout]', id: 'checkout'}
+  = link_to "Search rooms", "javascript:void(0)", onclick: "searchRoom()"
+  
+  %h3#total_rooms Total Rooms 0
+  
+  #rooms_list{style: "overflow: auto;height: 300px;width: 300px;"}
+
+  %br
+  .actions
+    = f.submit 'Save'
+
+
+:javascript
+  function searchRoom(){
+    checkout = $("#checkout").val()
+    checkin = $("#checkin").val()
+    $.ajax({
+      url: '/rooms/do_search.json',
+      data: {q: {checkout: checkout, checkin: checkin} },
+      success: function(res,status){
+        
+        $("#total_rooms").html("Total Rooms "+ res.rooms.length)
+        categories = res.categories
+        $.map(res.rooms, function(room, index){
+          input = $("<input>",{type: 'checkbox', name: "reservation[room_ids][]", value: room.id})
+          $("#rooms_list").append(input)
+          cat = categories[room.room_category_id]
+          room_title = room.room_no + " (" + cat.name + ") ($" + cat.price + "/night)"
+          span = $("<span>", {text: room_title})
+          $("#rooms_list").append(span)
+          $("#rooms_list").append("<br>")
+        })
+      },
+      error: function(res, status){
+        alert("Error")
+      }
+    })
+    return false;
+  }
